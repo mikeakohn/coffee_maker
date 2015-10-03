@@ -1,33 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct _class_writer *class_writer_alloc()
+#include "ClassWriter.h"
+
+ClassWriter::ClassWriter()
 {
-  struct _class_writer *class_writer;
 
-  class_writer = (struct _class_writer *)malloc(sizeof(struct _class_writer));
-  memset(class_writer, 0, sizeof(struct _class_writer));
-
-  return class_writer;
 }
 
-int class_writer_add_field(struct _class_writer *class_writer)
+ClassWriter::~ClassWriter()
 {
-  return -1;
+
 }
 
-int class_writer_add_method(struct _class_writer *class_writer)
+int ClassWriter::add_field()
 {
   return -1;
 }
 
-int class_writer_write(struct _class_writer *class_writer)
+int ClassWriter::add_method()
 {
   return -1;
 }
 
-int class_writer_free(struct _class_writer *class_writer)
+int ClassWriter::write()
 {
   return -1;
 }
+
 

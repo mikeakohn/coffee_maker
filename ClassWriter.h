@@ -2,8 +2,19 @@
 #ifndef _CLASS_WRITER_H
 #define _CLASS_WRITER_H
 
-struct _class_writer
+#include <stdint.h>
+
+class ClassWriter
 {
+public:
+  ClassWriter();
+  ~ClassWriter();
+
+  int add_field();
+  int add_method();
+  int write();
+
+private:
   int constants_count;
   uint32_t *constants_index;
   uint8_t *constants;
@@ -15,11 +26,6 @@ struct _class_writer
   uint8_t *fields;
 };
 
-struct _class_writer *class_writer_alloc();
-int class_writer_add_field(struct _class_writer *class_writer);
-int class_writer_add_method(struct _class_writer *class_writer);
-int class_writer_write(struct _class_writer *class_writer);
-int class_writer_free(struct _class_writer *class_writer);
 
 #endif
 

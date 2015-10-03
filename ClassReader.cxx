@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "ClassReader.h"
+
 #define GET_INT16(a, ptr) ((a[ptr] << 8) | \
                            (a[ptr+1]))
 #define GET_INT32(a, ptr) ((a[ptr] << 24) | \
@@ -25,7 +27,7 @@ struct _constants
   uint32_t *index;
 };
 
-static int dump_header(uint8_t *buffer)
+int ClassReader::dump_header(uint8_t *buffer)
 {
   const char *version;
 
@@ -51,7 +53,7 @@ static int dump_header(uint8_t *buffer)
   return 8;
 }
 
-static int dump_constants(uint8_t *buffer, int ptr, struct _constants *constants)
+int ClassReader::dump_constants(uint8_t *buffer, int ptr, struct _constants *constants)
 {
   uint16_t constant_count = GET_INT16(buffer, ptr);
   int index;
@@ -172,7 +174,7 @@ static int dump_constants(uint8_t *buffer, int ptr, struct _constants *constants
   return ptr;
 }
 
-static void show_name(uint8_t *buffer, struct _constants *constants, int index)
+void ClassReader::show_name(uint8_t *buffer, struct _constants *constants, int index)
 {
   uint16_t count;
   uint8_t tag;
@@ -191,7 +193,7 @@ static void show_name(uint8_t *buffer, struct _constants *constants, int index)
   }
 }
 
-static void show_class(uint8_t *buffer, struct _constants *constants, int index)
+void ClassReader::show_class(uint8_t *buffer, struct _constants *constants, int index)
 {
   uint8_t tag;
   int ptr;
@@ -206,7 +208,7 @@ static void show_class(uint8_t *buffer, struct _constants *constants, int index)
   show_name(buffer, constants, GET_INT16(buffer, ptr + 1));
 }
 
-static int dump_info(uint8_t *buffer, int ptr, struct _constants *constants)
+int ClassReader::dump_info(uint8_t *buffer, int ptr, struct _constants *constants)
 {
   int access_flags = GET_INT16(buffer, ptr);
   int this_class_index = GET_INT16(buffer, ptr + 2);
@@ -233,7 +235,7 @@ static int dump_info(uint8_t *buffer, int ptr, struct _constants *constants)
   return ptr + 6;
 }
 
-static int dump_interfaces(uint8_t *buffer, int ptr, struct _constants *constants)
+int ClassReader::dump_interfaces(uint8_t *buffer, int ptr, struct _constants *constants)
 {
   int interface_count = GET_INT16(buffer, ptr);
   uint16_t name_index;
@@ -260,7 +262,7 @@ static int dump_interfaces(uint8_t *buffer, int ptr, struct _constants *constant
   return ptr;
 }
 
-static int dump_attributes(uint8_t *buffer, int ptr, struct _constants *constants)
+int ClassReader::dump_attributes(uint8_t *buffer, int ptr, struct _constants *constants)
 {
   uint16_t attribute_name_index;
   uint32_t attribute_length;
@@ -289,7 +291,7 @@ static int dump_attributes(uint8_t *buffer, int ptr, struct _constants *constant
   return ptr;
 }
 
-static int dump_fields(uint8_t *buffer, int ptr, struct _constants *constants)
+int ClassReader::dump_fields(uint8_t *buffer, int ptr, struct _constants *constants)
 {
   int field_count = GET_INT16(buffer, ptr);
   uint16_t access_flags;
@@ -339,7 +341,7 @@ static int dump_fields(uint8_t *buffer, int ptr, struct _constants *constants)
   return ptr;
 }
 
-static int dump_methods(uint8_t *buffer, int ptr, struct _constants *constants)
+int ClassReader::dump_methods(uint8_t *buffer, int ptr, struct _constants *constants)
 {
   int method_count = GET_INT16(buffer, ptr);
   uint16_t access_flags;
@@ -392,7 +394,7 @@ static int dump_methods(uint8_t *buffer, int ptr, struct _constants *constants)
   return ptr;
 }
 
-int dump_class(uint8_t *buffer)
+int ClassReader::dump_class(uint8_t *buffer)
 {
   int ptr, i;
   int attributes_count;

@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
   FILE *out;
-  struct _class_writer *class_writer;
+  ClassWriter *class_writer;
 
   printf("\ncoffee_maker by Michael Kohn\n"
          "http://www.mikekohn.net/\n\n");
@@ -26,7 +26,10 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  class_writer = class_writer_alloc();
+  class_writer = new ClassWriter();
+
+
+  delete class_writer;
 
   fclose(out);
 

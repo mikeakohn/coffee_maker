@@ -34,14 +34,14 @@ int main(int argc, char *argv[])
 
   buffer = (uint8_t *)malloc(file_stat.st_size);
 
-  if (fread(buffer, 1, file_stat.st_size, in) != file_stat.st_size)
+  if (fread(buffer, 1, file_stat.st_size, in) != (uint32_t)file_stat.st_size)
   {
     printf("Error: fread() couldn't read file\n");
   }
 
   fclose(in);
 
-  dump_class(buffer);
+  ClassReader::dump_class(buffer);
 
   free(buffer);
 
