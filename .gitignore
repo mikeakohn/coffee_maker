@@ -1,3 +1,4 @@
 *.o
 coffee_maker
 coffee_dump
+*.class

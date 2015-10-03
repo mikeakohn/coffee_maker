@@ -8,6 +8,8 @@ int main(int argc, char *argv[])
 {
   FILE *out;
   ClassWriter *class_writer;
+  uint8_t buffer[65536];
+  int len;
 
   printf("\ncoffee_maker by Michael Kohn\n"
          "http://www.mikekohn.net/\n\n");
@@ -28,9 +30,18 @@ int main(int argc, char *argv[])
 
   class_writer = new ClassWriter();
 
+  class_writer->set_major_version(JAVA_VERSION_7);
+  class_writer->set_class_name("TestClass");
+  class_writer->set_access_flags(CLASS_ACCESS_PUBLIC);
 
+  len = class_writer->write(buffer, sizeof(buffer));
   delete class_writer;
 
+  printf("len=%d\n", len);
+  if (len > 0)
+  {
+    fwrite(buffer, len, 1, out);
+  }
   fclose(out);
 
   return 0;
