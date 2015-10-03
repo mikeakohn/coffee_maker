@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "class_writer.h"
+#include "ClassWriter.h"
 
 int main(int argc, char *argv[])
 {

@@ -27,7 +27,7 @@ struct _constants
 
 static int dump_header(uint8_t *buffer)
 {
-  char *version;
+  const char *version;
 
   switch(GET_INT16(buffer, 6))
   {
@@ -264,7 +264,7 @@ static int dump_attributes(uint8_t *buffer, int ptr, struct _constants *constant
 {
   uint16_t attribute_name_index;
   uint32_t attribute_length;
-  int k;
+  uint32_t k;
 
   attribute_name_index = GET_INT16(buffer, ptr);
   attribute_length = GET_INT32(buffer, ptr + 2);

@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "class_reader.h"
+#include "ClassReader.h"
 
 int main(int argc, char *argv[])
 {
