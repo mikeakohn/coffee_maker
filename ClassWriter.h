@@ -20,6 +20,16 @@
 #define CLASS_ACCESS_ANNOTATION 0x2000
 #define CLASS_ACCESS_ENUM 0x4000
 
+#define FIELD_ACCESS_PUBLIC 0x0001
+#define FIELD_ACCESS_PRIVATE 0x0002
+#define FIELD_ACCESS_PROTECTED 0x0004
+#define FIELD_ACCESS_STATIC 0x0008
+#define FIELD_ACCESS_FINAL 0x0010
+#define FIELD_ACCESS_VOLATILE 0x0040
+#define FIELD_ACCESS_TRANSIENT 0x0080
+#define FIELD_ACCESS_SYNTHETIC 0x1000
+#define FIELD_ACCESS_ENUM 0x4000
+
 class Constant
 {
 public:
@@ -35,9 +45,8 @@ public:
 class Field
 {
 public:
-  Field() : index(0), class_index(0), name(0), type(0) { }
-  int index;
-  int class_index;
+  Field() : access_flags(0), name(0), type(0) { }
+  int access_flags;
   int name;
   int type;
 };
@@ -53,7 +62,7 @@ public:
   void set_major_version(uint16_t value) { major_version = value; }
   void set_minor_version(uint16_t value) { minor_version = value; }
   void set_access_flags(uint16_t value) { access_flags = value; }
-  int add_field(std::string name, std::string type);
+  int add_field(std::string name, std::string type, uint16_t access_flags);
   int add_method();
   int write(uint8_t *buffer, int len);
 

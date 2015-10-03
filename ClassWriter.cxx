@@ -14,7 +14,7 @@ ClassWriter::~ClassWriter()
 
 }
 
-int ClassWriter::add_field(std::string name, std::string type)
+int ClassWriter::add_field(std::string name, std::string type, uint16_t access_flags)
 {
   Constant constant;
   Field field;
@@ -28,7 +28,9 @@ int ClassWriter::add_field(std::string name, std::string type)
   constant.class_index = get_constant_class(class_name);
   constant.name_and_type = get_constant_name_and_type(name, type);
 
-  field.index = constants.size();
+  field.access_flags = access_flags;
+  field.name = get_constant_utf8(name);
+  field.type = get_constant_utf8(type);
   fields.push_back(field);
 
   constants.push_back(constant);
@@ -215,11 +217,26 @@ int ClassWriter::write_interfaces(uint8_t *buffer, int len, int &ptr)
 
 int ClassWriter::write_fields(uint8_t *buffer, int len, int &ptr)
 {
-  uint16_t fields_count = fields.size() + 1;
+  uint16_t fields_count = fields.size();
+  std::vector<Field>::iterator iter;
+
   if (len < ptr + 2) { return -1; }
 
   buffer[ptr++] = fields_count >> 8;
   buffer[ptr++] = fields_count & 0xff;
+
+  for (iter = fields.begin(); iter < fields.end(); iter++)
+  {
+    if (len < ptr + 8) { return -1; }
+    buffer[ptr++] = iter->access_flags >> 8;
+    buffer[ptr++] = iter->access_flags & 0xff;
+    buffer[ptr++] = iter->name >> 8;
+    buffer[ptr++] = iter->name & 0xff;
+    buffer[ptr++] = iter->type >> 8;
+    buffer[ptr++] = iter->type & 0xff;
+    buffer[ptr++] = 0;
+    buffer[ptr++] = 0; 
+  }
 
   return 0;
 }
