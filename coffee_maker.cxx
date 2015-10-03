@@ -33,15 +33,21 @@ int main(int argc, char *argv[])
   class_writer->set_major_version(JAVA_VERSION_7);
   class_writer->set_class_name("TestClass");
   class_writer->set_access_flags(CLASS_ACCESS_PUBLIC);
+  class_writer->add_field("field1", "I");
+  class_writer->add_field("field2", "I");
 
   len = class_writer->write(buffer, sizeof(buffer));
   delete class_writer;
 
-  printf("len=%d\n", len);
   if (len > 0)
   {
     fwrite(buffer, len, 1, out);
   }
+    else
+  {
+    printf("Error creating class\n");
+  }
+
   fclose(out);
 
   return 0;

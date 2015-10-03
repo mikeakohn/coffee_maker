@@ -23,18 +23,23 @@
 class Constant
 {
 public:
-  Constant() :
-    tag(0),
-    class_index(0),
-    name_and_type(0),
-    name(0),
-    type(0) { }
+  Constant() : tag(0), class_index(0), name_and_type(0), name(0), type(0) { }
   uint8_t tag;
   int class_index;
   int name_and_type;
   int name;
   int type;
   std::string text;
+};
+
+class Field
+{
+public:
+  Field() : index(0), class_index(0), name(0), type(0) { }
+  int index;
+  int class_index;
+  int name;
+  int type;
 };
 
 class ClassWriter
@@ -47,16 +52,20 @@ public:
   void set_super_class(const char *value) { super_class = value; }
   void set_major_version(uint16_t value) { major_version = value; }
   void set_minor_version(uint16_t value) { minor_version = value; }
-  void set_access_flags(uint16_t value) { minor_version = value; }
-  int add_field();
+  void set_access_flags(uint16_t value) { access_flags = value; }
+  int add_field(std::string name, std::string type);
   int add_method();
   int write(uint8_t *buffer, int len);
 
 private:
-  int get_constant(std::string &name);
+  int get_constant_class(std::string &name);
+  int get_constant_name_and_type(std::string &name, std::string &type);
+  int get_constant_utf8(std::string &text);
   int write_constants(uint8_t *buffer, int len, int &ptr);
+  int write_interfaces(uint8_t *buffer, int len, int &ptr);
   int write_fields(uint8_t *buffer, int len, int &ptr);
   int write_methods(uint8_t *buffer, int len, int &ptr);
+  int write_attributes(uint8_t *buffer, int len, int &ptr);
 
   std::string class_name;
   std::string super_class;
@@ -64,16 +73,11 @@ private:
   uint16_t major_version;
   uint16_t access_flags;
 
-  //int constants_count;
   std::vector<Constant> constants;
-  //std::vector<int> constants_index;
-  //uint8_t *constants;
+  std::vector<Field> fields;
 
   int methods_count;
   uint8_t *methods;
-
-  int fields_count;
-  uint8_t *fields;
 };
 
 
