@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   struct stat file_stat;
   uint8_t *buffer;
 
-  printf("\njava_class_dump by Michael Kohn\n"
+  printf("\ncoffee_dump by Michael Kohn\n"
          "http://www.mikekohn.net/\n\n");
 
   if (argc != 2)
