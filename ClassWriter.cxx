@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ClassWriter.h"
 
@@ -52,17 +53,16 @@ int ClassWriter::write(uint8_t *buffer, int len)
 
   if (write_constants(buffer, len, ptr) < 0) { return -1; }
 
+printf("len=%d ptr=%d\n", len, ptr);
   // Write access flags
   if (len < ptr + 6) { return -1; }
   buffer[ptr++] = access_flags >> 8;
   buffer[ptr++] = access_flags & 0xff;
 
   index = get_constant(class_name);
-printf("index=%d\n", index);
   buffer[ptr++] = index >> 8;
   buffer[ptr++] = index & 0xff;
   index = get_constant(super_class);
-printf("index=%d\n", index);
   buffer[ptr++] = index >> 8;
   buffer[ptr++] = index & 0xff;
 
@@ -95,12 +95,28 @@ int ClassWriter::get_constant(std::string &name)
 int ClassWriter::write_constants(uint8_t *buffer, int len, int &ptr)
 {
   uint16_t constants_count = constants.size();
+  std::vector<Constant>::iterator iter;
 
   if (len < ptr + 2) { return -1; }
 
   buffer[ptr++] = constants_count >> 8;
   buffer[ptr++] = constants_count & 0xff;
-  write_constants(buffer, len, ptr);
+
+  for (iter = constants.begin(); iter < constants.end(); iter++)
+  {
+    if (iter->tag == 1)
+    {
+      uint16_t text_length = (uint16_t)iter->text.size();
+
+      if (len < ptr + 3 + text_length) { return -1; }
+      buffer[ptr++] = iter->tag;
+      buffer[ptr++] = text_length >> 8;
+      buffer[ptr++] = text_length & 0xff;
+      memcpy(buffer + ptr, iter->text.c_str(), text_length);
+      ptr += text_length;
+//printf("constant: %s %d\n", iter->text.c_str(), (int)iter->text.size());
+    }
+  }
 
   return ptr;
 }
