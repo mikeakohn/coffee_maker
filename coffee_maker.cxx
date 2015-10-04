@@ -48,6 +48,10 @@ int main(int argc, char *argv[])
   printf("field_id=%d\n", class_writer->get_field_id("field1"));
   printf("field_id=%d\n", class_writer->get_field_id("field2"));
   printf("method_id=%d\n", class_writer->get_method_id("addNums"));
+
+  printf("field_id=%d\n", class_writer->get_method_id("field1", "I", "MyObject"));
+  printf("method_id=%d\n", class_writer->get_method_id("start", "()V", "MyObject"));
+  printf("field_id=%d\n", class_writer->get_field_id("field1"));
 #endif
 
   len = class_writer->write(buffer, sizeof(buffer));

@@ -77,12 +77,16 @@ int ClassWriter::get_field_id(std::string name)
 {
   Constant constant;
   int index;
+  int this_class = get_constant_class(class_name);
 
   for (index = 1; index < (int)constants.size(); index++)
   {
     if (constants[index].tag == 9)
     {
+      int class_index = constants[index].class_index;
       int name_and_type = constants[index].name_and_type;
+
+      if (class_index != this_class) { continue; }
 
       if (constants[constants[name_and_type].name].text == name)
       {
@@ -98,12 +102,16 @@ int ClassWriter::get_method_id(std::string name)
 {
   Constant constant;
   int index;
+  int this_class = get_constant_class(class_name);
 
   for (index = 1; index < (int)constants.size(); index++)
   {
     if (constants[index].tag == 10)
     {
+      int class_index = constants[index].class_index;
       int name_and_type = constants[index].name_and_type;
+
+      if (class_index != this_class) { continue; }
 
       if (constants[constants[name_and_type].name].text == name)
       {
@@ -113,6 +121,66 @@ int ClassWriter::get_method_id(std::string name)
   }
 
   return -1;
+}
+
+int ClassWriter::get_field_id(std::string name, std::string type, std::string class_name)
+{
+  Constant constant;
+  int index;
+  int this_class = get_constant_class(class_name);
+
+  for (index = 1; index < (int)constants.size(); index++)
+  {
+    if (constants[index].tag == 9)
+    {
+      int class_index = constants[index].class_index;
+      int name_and_type = constants[index].name_and_type;
+
+      if (class_index != this_class) { continue; }
+
+      if (constants[constants[name_and_type].name].text == name)
+      {
+        return index;
+      }
+    }
+  }
+
+  constant.tag = 9;
+  constant.class_index = this_class;
+  constant.name_and_type = get_constant_name_and_type(name, type);
+  constants.push_back(constant);
+
+  return constants.size() - 1;
+}
+
+int ClassWriter::get_method_id(std::string name, std::string type, std::string class_name)
+{
+  Constant constant;
+  int index;
+  int this_class = get_constant_class(class_name);
+
+  for (index = 1; index < (int)constants.size(); index++)
+  {
+    if (constants[index].tag == 10)
+    {
+      int class_index = constants[index].class_index;
+      int name_and_type = constants[index].name_and_type;
+
+      if (class_index != this_class) { continue; }
+
+      if (constants[constants[name_and_type].name].text == name)
+      {
+        return index;
+      }
+    }
+  }
+
+  constant.tag = 10;
+  constant.class_index = this_class;
+  constant.name_and_type = get_constant_name_and_type(name, type);
+  constants.push_back(constant);
+
+  return constants.size() - 1;
 }
 
 int ClassWriter::write(uint8_t *buffer, int len)
