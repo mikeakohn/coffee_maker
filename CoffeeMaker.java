@@ -13,6 +13,7 @@ public class CoffeeMaker
   native public void setMajorVersion(int value);
   native public void setAccessFlags(int value);
   native public int addField(String name, String type, short access_flags);
+  native public byte[] create();
 
   static
   {
