@@ -6,7 +6,11 @@
 
 ClassWriter::ClassWriter()
 {
+  Constant constant;
+
   super_class = "java/lang/Object";
+
+  constants.push_back(constant);
 }
 
 ClassWriter::~ClassWriter()
@@ -65,7 +69,7 @@ int ClassWriter::write(uint8_t *buffer, int len)
 
   // Get constant index for this class and super class or insert it
   get_constant_class(class_name);
-  get_constant_utf8(super_class);
+  get_constant_class(super_class);
 
   if (write_constants(buffer, len, ptr) < 0) { return -1; }
 
@@ -74,10 +78,10 @@ int ClassWriter::write(uint8_t *buffer, int len)
   buffer[ptr++] = access_flags >> 8;
   buffer[ptr++] = access_flags & 0xff;
 
-  index = get_constant_utf8(class_name);
+  index = get_constant_class(class_name);
   buffer[ptr++] = index >> 8;
   buffer[ptr++] = index & 0xff;
-  index = get_constant_utf8(super_class);
+  index = get_constant_class(super_class);
   buffer[ptr++] = index >> 8;
   buffer[ptr++] = index & 0xff;
 
@@ -94,13 +98,13 @@ int ClassWriter::get_constant_class(std::string &name)
   Constant constant;
   int index;
 
-  for (index = 0; index < (int)constants.size(); index++)
+  for (index = 1; index < (int)constants.size(); index++)
   {
     if (constants[index].tag == 7)
     {
       if (constants[constants[index].name].text == name)
       {
-        return index + 1;
+        return index;
       }
     }
   }
@@ -109,7 +113,7 @@ int ClassWriter::get_constant_class(std::string &name)
   constant.name = get_constant_utf8(name);
   constants.push_back(constant);
 
-  return constants.size();
+  return constants.size() - 1;
 }
 
 int ClassWriter::get_constant_name_and_type(std::string &name, std::string &type)
@@ -121,7 +125,7 @@ int ClassWriter::get_constant_name_and_type(std::string &name, std::string &type
   constant.type = get_constant_utf8(type);
   constants.push_back(constant);
 
-  return constants.size();
+  return constants.size() - 1;
 }
 
 int ClassWriter::get_constant_utf8(std::string &text)
@@ -129,11 +133,11 @@ int ClassWriter::get_constant_utf8(std::string &text)
   Constant constant;
   int index;
 
-  for (index = 0; index < (int)constants.size(); index++)
+  for (index = 1; index < (int)constants.size(); index++)
   {
     if (constants[index].tag == 1 && text == constants[index].text)
     {
-      return index + 1;
+      return index;
     }
   }
 
@@ -141,12 +145,12 @@ int ClassWriter::get_constant_utf8(std::string &text)
   constant.text = text;
   constants.push_back(constant);
 
-  return constants.size();
+  return constants.size() - 1;
 }
 
 int ClassWriter::write_constants(uint8_t *buffer, int len, int &ptr)
 {
-  uint16_t constants_count = constants.size() + 1;
+  uint16_t constants_count = constants.size();
   std::vector<Constant>::iterator iter;
 
   if (len < ptr + 2) { return -1; }
