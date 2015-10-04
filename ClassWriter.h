@@ -30,6 +30,19 @@
 #define FIELD_ACCESS_SYNTHETIC 0x1000
 #define FIELD_ACCESS_ENUM 0x4000
 
+#define METHOD_ACCESS_PUBLIC 0x0001
+#define METHOD_ACCESS_PRIVATE 0x0002
+#define METHOD_ACCESS_PROTECTED 0x0004
+#define METHOD_ACCESS_STATIC 0x0008
+#define METHOD_ACCESS_FINAL 0x0010
+#define METHOD_ACCESS_SYNCHRONIZED 0x0020
+#define METHOD_ACCESS_BRIDGE 0x0040
+#define METHOD_ACCESS_VARARGS 0x0080
+#define METHOD_ACCESS_NATIVE 0x0100
+#define METHOD_ACCESS_ABSTRACT 0x0400
+#define METHOD_ACCESS_STRICT 0x0800
+#define METHOD_ACCESS_SYNTHETIC 0x1000
+
 class Constant
 {
 public:
@@ -51,6 +64,19 @@ public:
   int type;
 };
 
+class Method
+{
+public:
+  Method() : access_flags(0), name(0), type(0), max_stack(0), max_locals(0), code(NULL), code_length(0) { }
+  int access_flags;
+  int name;
+  int type;
+  int max_stack;
+  int max_locals;
+  uint8_t *code;
+  int code_length;
+};
+
 class ClassWriter
 {
 public:
@@ -63,7 +89,7 @@ public:
   void set_minor_version(uint16_t value) { minor_version = value; }
   void set_access_flags(uint16_t value) { access_flags = value; }
   int add_field(std::string name, std::string type, uint16_t access_flags);
-  int add_method();
+  int add_method(std::string name, std::string type, uint16_t access_flags, int max_stack, int max_locals, uint8_t *code, int code_length);
   int write(uint8_t *buffer, int len);
 
 private:
@@ -82,11 +108,11 @@ private:
   uint16_t major_version;
   uint16_t access_flags;
 
+  bool need_code;
+
   std::vector<Constant> constants;
   std::vector<Field> fields;
-
-  int methods_count;
-  uint8_t *methods;
+  std::vector<Method> methods;
 };
 
 

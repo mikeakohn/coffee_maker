@@ -4,7 +4,7 @@
 
 #include "ClassWriter.h"
 
-ClassWriter::ClassWriter()
+ClassWriter::ClassWriter() : need_code(false)
 {
   Constant constant;
 
@@ -42,9 +42,35 @@ int ClassWriter::add_field(std::string name, std::string type, uint16_t access_f
   return 0;
 }
 
-int ClassWriter::add_method()
+int ClassWriter::add_method(std::string name, std::string type, uint16_t access_flags, int max_stack, int max_locals, uint8_t *code, int code_length)
 {
-  return -1;
+  Constant constant;
+  Method method;
+
+  if (class_name == "")
+  {
+    return -1;
+  }
+
+  if (code_length != 0) { need_code = true; }
+
+  constant.tag = 10;
+  constant.class_index = get_constant_class(class_name);
+  constant.name_and_type = get_constant_name_and_type(name, type);
+
+  method.access_flags = access_flags;
+  method.name = get_constant_utf8(name);
+  method.type = get_constant_utf8(type);
+  method.max_stack = max_stack;
+  method.max_locals = max_locals;
+  method.code = (uint8_t *)malloc(code_length);
+  memcpy(method.code, code, code_length);
+  method.code_length = code_length;
+  methods.push_back(method);
+
+  constants.push_back(constant);
+
+  return 0;
 }
 
 int ClassWriter::write(uint8_t *buffer, int len)
@@ -70,6 +96,10 @@ int ClassWriter::write(uint8_t *buffer, int len)
   // Get constant index for this class and super class or insert it
   get_constant_class(class_name);
   get_constant_class(super_class);
+
+  // If we have methods that aren't native, need a "Code" string
+  std::string code = "Code";
+  if (need_code) { get_constant_class(code); }
 
   if (write_constants(buffer, len, ptr) < 0) { return -1; }
 
@@ -182,9 +212,9 @@ int ClassWriter::write_constants(uint8_t *buffer, int len, int &ptr)
       buffer[ptr++] = iter->name & 0xff;
     }
       else
-    if (iter->tag == 9)
+    if (iter->tag == 9 || iter->tag == 10)
     {
-      // FIELD
+      // FIELD OR METHOD
       if (len < ptr + 5) { return -1; }
       buffer[ptr++] = iter->tag;
       buffer[ptr++] = iter->class_index >> 8;
@@ -239,7 +269,7 @@ int ClassWriter::write_fields(uint8_t *buffer, int len, int &ptr)
     buffer[ptr++] = iter->type >> 8;
     buffer[ptr++] = iter->type & 0xff;
     buffer[ptr++] = 0;
-    buffer[ptr++] = 0; 
+    buffer[ptr++] = 0;
   }
 
   return 0;
@@ -247,10 +277,52 @@ int ClassWriter::write_fields(uint8_t *buffer, int len, int &ptr)
 
 int ClassWriter::write_methods(uint8_t *buffer, int len, int &ptr)
 {
+  uint16_t methods_count = methods.size();
+  std::vector<Method>::iterator iter;
+
   if (len < ptr + 2) { return -1; }
 
   buffer[ptr++] = methods_count >> 8;
   buffer[ptr++] = methods_count & 0xff;
+
+  for (iter = methods.begin(); iter < methods.end(); iter++)
+  {
+    int attribute_length = 2 + 4 + 2 + 2 + 4 + iter->code_length + 2 + 2;
+
+    if (len < ptr + 8 + 24 + iter->code_length) { return -1; }
+    buffer[ptr++] = iter->access_flags >> 8;
+    buffer[ptr++] = iter->access_flags & 0xff;
+    buffer[ptr++] = iter->name >> 8;
+    buffer[ptr++] = iter->name & 0xff;
+    buffer[ptr++] = iter->type >> 8;
+    buffer[ptr++] = iter->type & 0xff;
+    buffer[ptr++] = 0;
+    buffer[ptr++] = 1;
+
+    // Attribute name
+    std::string code = "Code";
+    uint16_t index = get_constant_utf8(code);
+    buffer[ptr++] = index >> 8;
+    buffer[ptr++] = index & 0xff;
+
+    // Length of this attribute
+    buffer[ptr++] = (attribute_length >> 24) & 0xff;
+    buffer[ptr++] = (attribute_length >> 16) & 0xff;
+    buffer[ptr++] = (attribute_length >> 8) & 0xff;
+    buffer[ptr++] = attribute_length & 0xff;
+
+    buffer[ptr++] = iter->max_stack >> 8;
+    buffer[ptr++] = iter->max_stack & 0xff;
+    buffer[ptr++] = iter->max_locals >> 8;
+    buffer[ptr++] = iter->max_locals & 0xff;
+
+    buffer[ptr++] = (iter->code_length >> 24) & 0xff;
+    buffer[ptr++] = (iter->code_length >> 16) & 0xff;
+    buffer[ptr++] = (iter->code_length >> 8) & 0xff;
+    buffer[ptr++] = iter->code_length & 0xff;
+
+    free(iter->code);
+  }
 
   return 0;
 }

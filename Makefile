@@ -1,5 +1,5 @@
 
-CFLAGS=-O3 -Wall
+CFLAGS=-O3 -Wall -g
 
 default:
 	g++ -c ClassReader.cxx $(CFLAGS)
