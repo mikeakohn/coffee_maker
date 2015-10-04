@@ -160,6 +160,86 @@ JNIEXPORT int JNICALL Java_CoffeeMaker_addMethod(
   return 0;
 }
 
+// native public int getFieldId(String name);
+JNIEXPORT jint JNICALL Java_CoffeeMaker_getFieldId__Ljava_lang_String_2(
+  JNIEnv *env,
+  jobject obj,
+  jstring name_s)
+{
+  ClassWriter *class_writer;
+  class_writer = (ClassWriter *)env->GetLongField(obj, handle);
+
+  const char *name = env->GetStringUTFChars(name_s, 0);
+  int value = class_writer->get_field_id(name);
+  env->ReleaseStringUTFChars(name_s, name);
+
+  return value;
+}
+
+// native public int getMethodId(String name);
+JNIEXPORT jint JNICALL Java_CoffeeMaker_getMethodId__Ljava_lang_String_2(
+  JNIEnv *env,
+  jobject obj,
+  jstring name_s)
+{
+  ClassWriter *class_writer;
+  class_writer = (ClassWriter *)env->GetLongField(obj, handle);
+
+  const char *name = env->GetStringUTFChars(name_s, 0);
+  int value = class_writer->get_method_id(name);
+  env->ReleaseStringUTFChars(name_s, name);
+
+  return value;
+}
+
+// native public int getFieldId(String name, String type, String class_name);
+JNIEXPORT jint JNICALL Java_CoffeeMaker_getFieldId__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2(
+  JNIEnv *env,
+  jobject obj, 
+  jstring name_s,
+  jstring type_s,
+  jstring class_name_s)
+{
+  ClassWriter *class_writer;
+  class_writer = (ClassWriter *)env->GetLongField(obj, handle);
+
+  const char *name = env->GetStringUTFChars(name_s, 0);
+  const char *type = env->GetStringUTFChars(type_s, 0);
+  const char *class_name = env->GetStringUTFChars(class_name_s, 0);
+
+  int value = class_writer->get_field_id(name, type, class_name);
+
+  env->ReleaseStringUTFChars(name_s, name);
+  env->ReleaseStringUTFChars(type_s, type);
+  env->ReleaseStringUTFChars(class_name_s, class_name);
+
+  return value;
+}
+
+// native public int getMethodId(String name, String type, String class_name);
+JNIEXPORT jint JNICALL Java_CoffeeMaker_getMethodId__Ljava_lang_String_2Ljava_lang_String_2Ljava_lang_String_2(
+  JNIEnv *env,
+  jobject obj,
+  jstring name_s,
+  jstring type_s,
+  jstring class_name_s)
+{
+  ClassWriter *class_writer;
+  class_writer = (ClassWriter *)env->GetLongField(obj, handle);
+
+  const char *name = env->GetStringUTFChars(name_s, 0);
+  const char *type = env->GetStringUTFChars(type_s, 0);
+  const char *class_name = env->GetStringUTFChars(class_name_s, 0);
+
+  int value = class_writer->get_method_id(name, type, class_name);
+
+  env->ReleaseStringUTFChars(name_s, name);
+  env->ReleaseStringUTFChars(type_s, type);
+  env->ReleaseStringUTFChars(class_name_s, class_name);
+
+  return value;
+}
+
 // native public byte[] create();
 JNIEXPORT jbyteArray JNICALL Java_CoffeeMaker_create(
   JNIEnv *env,

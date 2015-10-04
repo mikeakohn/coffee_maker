@@ -22,6 +22,9 @@ public class Test
                CoffeeMaker.METHOD_ACCESS_STATIC),
        2, 2, code);
 
+    //System.out.println(coffee_maker.getFieldId("field1"));
+    //System.out.println(coffee_maker.getMethodId("addNums"));
+
     Class<?> cls = coffee_maker.load();
     Class method_args[] = { int.class, int.class };
 /*
