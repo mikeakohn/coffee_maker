@@ -1,4 +1,6 @@
 *.o
-coffee_maker
+coffee_write
 coffee_dump
 *.class
+*.swp
+*.so
