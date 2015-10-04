@@ -7,7 +7,12 @@ default:
 	g++ -o coffee_dump coffee_dump.cxx ClassReader.o $(CFLAGS)
 	g++ -o coffee_maker coffee_maker.cxx ClassWriter.o $(CFLAGS)
 
+test:
+	./coffee_maker TestClass.class
+	javac Test.java
+	java Test
+
 clean:
-	@rm -f *.o coffee_dump coffee_maker
+	@rm -f *.o coffee_dump coffee_maker *.class
 	@echo "Clean!"
 

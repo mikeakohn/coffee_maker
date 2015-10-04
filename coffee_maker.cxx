@@ -37,12 +37,12 @@ int main(int argc, char *argv[])
   class_writer->add_field("field1", "I", FIELD_ACCESS_PUBLIC);
   class_writer->add_field("field2", "I", FIELD_ACCESS_PUBLIC);
 
-  code[0] = 0x2a;
-  code[1] = 0x2b;
+  code[0] = 0x1a;
+  code[1] = 0x1b;
   code[2] = 0x60;
   code[3] = 0xac;
 
-  class_writer->add_method("addNums", "(II)I", METHOD_ACCESS_PUBLIC | METHOD_ACCESS_STATIC, 2, 0, code, 4);
+  class_writer->add_method("addNums", "(II)I", METHOD_ACCESS_PUBLIC | METHOD_ACCESS_STATIC, 2, 2, code, 4);
 
   len = class_writer->write(buffer, sizeof(buffer));
   delete class_writer;
