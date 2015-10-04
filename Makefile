@@ -15,6 +15,10 @@ test:
 	javac Test.java
 	java Test
 
+jni:
+	javac Test.java
+	LD_LIBRARY_PATH=. java Test
+
 clean:
 	@rm -f *.o coffee_dump coffee_write *.class *.so
 	@echo "Clean!"

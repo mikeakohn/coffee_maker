@@ -7,6 +7,10 @@
 
 #include "ClassWriter.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 union _perftime
 {
   struct _split
@@ -42,7 +46,7 @@ JNIEXPORT void JNICALL Java_CoffeeMaker_stopTimer(JNIEnv *env, jobject obj)
 }
 
 // native public long openClassWriter();
-JNIEXPORT long JNICALL Java_CoffeeMaker_openClassWriter(
+JNIEXPORT jlong JNICALL Java_CoffeeMaker_openClassWriter(
   JNIEnv *env,
   jobject obj)
 {
@@ -128,6 +132,34 @@ JNIEXPORT int JNICALL Java_CoffeeMaker_addField(
   return 0;
 }
 
+// native public int addMethod(String name, String type, short access_flags, int max_stack, int max_locals, byte[] code);
+JNIEXPORT int JNICALL Java_CoffeeMaker_addMethod(
+  JNIEnv *env,
+  jobject obj,
+  jstring name_s,
+  jstring type_s,
+  jshort access_flags,
+  jint max_stack,
+  jint max_locals,
+  jbyteArray code_bytes)
+{
+  ClassWriter *class_writer;
+  class_writer = (ClassWriter *)env->GetLongField(obj, handle);
+
+  const char *name = env->GetStringUTFChars(name_s, 0);
+  const char *type = env->GetStringUTFChars(type_s, 0);
+  uint8_t *code = (uint8_t *)env->GetByteArrayElements(code_bytes, NULL);
+  int code_length = env->GetArrayLength(code_bytes); 
+
+  class_writer->add_method(name, type, access_flags, max_stack, max_locals, code, code_length);
+
+  env->ReleaseStringUTFChars(name_s, name);
+  env->ReleaseStringUTFChars(type_s, type);
+  env->ReleaseByteArrayElements(code_bytes, (int8_t *)code, 0);
+
+  return 0;
+}
+
 // native public byte[] create();
 JNIEXPORT jbyteArray JNICALL Java_CoffeeMaker_create(
   JNIEnv *env,
@@ -136,18 +168,31 @@ JNIEXPORT jbyteArray JNICALL Java_CoffeeMaker_create(
   jstring type_s,
   jshort access_flags)
 {
+  jbyteArray class_file;
   uint8_t buffer[65536];
   ClassWriter *class_writer;
   class_writer = (ClassWriter *)env->GetLongField(obj, handle);
   int len = class_writer->write(buffer, sizeof(buffer));
 
+#if 0
 for (int i = 0; i < len; i++)
 {
   printf(" %02x", buffer[i]);
 }
 printf("\n");
+#endif
+
   if (len < 0) { return NULL; }
 
-  return NULL;
+  class_file = env->NewByteArray(len);
+
+  env->SetByteArrayRegion(class_file, 0, len, (jbyte *)buffer);
+
+  return class_file;
 }
+
+#ifdef __cplusplus
+}
+#endif
+
 

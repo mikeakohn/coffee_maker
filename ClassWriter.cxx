@@ -4,7 +4,10 @@
 
 #include "ClassWriter.h"
 
-ClassWriter::ClassWriter() : need_code(false)
+ClassWriter::ClassWriter() :
+  minor_version(0),
+  major_version(50),
+  need_code(false)
 {
   Constant constant;
 
@@ -15,7 +18,12 @@ ClassWriter::ClassWriter() : need_code(false)
 
 ClassWriter::~ClassWriter()
 {
+  std::vector<Method>::iterator iter;
 
+  for (iter = methods.begin(); iter < methods.end(); iter++)
+  {
+    free(iter->code);
+  }
 }
 
 int ClassWriter::add_field(std::string name, std::string type, uint16_t access_flags)
@@ -442,8 +450,6 @@ int ClassWriter::write_methods(uint8_t *buffer, int len, int &ptr)
     // Attributes count
     buffer[ptr++] = 0;
     buffer[ptr++] = 0;
-
-    free(iter->code);
   }
 
   return 0;
