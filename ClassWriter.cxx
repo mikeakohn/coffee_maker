@@ -287,7 +287,7 @@ int ClassWriter::write_methods(uint8_t *buffer, int len, int &ptr)
 
   for (iter = methods.begin(); iter < methods.end(); iter++)
   {
-    int attribute_length = 2 + 4 + 2 + 2 + 4 + iter->code_length + 2 + 2;
+    int attribute_length = 2 + 2 + 4 + iter->code_length + 2 + 2;
 
     if (len < ptr + 8 + 24 + iter->code_length) { return -1; }
     buffer[ptr++] = iter->access_flags >> 8;
@@ -313,6 +313,7 @@ int ClassWriter::write_methods(uint8_t *buffer, int len, int &ptr)
 
     buffer[ptr++] = iter->max_stack >> 8;
     buffer[ptr++] = iter->max_stack & 0xff;
+
     buffer[ptr++] = iter->max_locals >> 8;
     buffer[ptr++] = iter->max_locals & 0xff;
 
@@ -320,6 +321,17 @@ int ClassWriter::write_methods(uint8_t *buffer, int len, int &ptr)
     buffer[ptr++] = (iter->code_length >> 16) & 0xff;
     buffer[ptr++] = (iter->code_length >> 8) & 0xff;
     buffer[ptr++] = iter->code_length & 0xff;
+
+    memcpy(buffer + ptr, iter->code, iter->code_length);
+    ptr += iter->code_length;
+
+    // Exception table length
+    buffer[ptr++] = 0;
+    buffer[ptr++] = 0;
+
+    // Attributes count
+    buffer[ptr++] = 0;
+    buffer[ptr++] = 0;
 
     free(iter->code);
   }

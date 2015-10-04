@@ -273,7 +273,7 @@ int ClassReader::dump_attributes(uint8_t *buffer, int ptr, struct _constants *co
 
   printf("    ");
   show_name(buffer, constants, attribute_name_index);
-  printf("\n");
+  printf(" (%d) length=%d\n", attribute_name_index, attribute_length);
 
   ptr += 6;
   for (k = 0; k < attribute_length; k++)
