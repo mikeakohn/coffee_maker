@@ -90,6 +90,8 @@ public:
   void set_access_flags(uint16_t value) { access_flags = value; }
   int add_field(std::string name, std::string type, uint16_t access_flags);
   int add_method(std::string name, std::string type, uint16_t access_flags, int max_stack, int max_locals, uint8_t *code, int code_length);
+  int get_field_id(std::string name);
+  int get_method_id(std::string name);
   int write(uint8_t *buffer, int len);
 
 private:

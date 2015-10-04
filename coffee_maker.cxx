@@ -44,6 +44,12 @@ int main(int argc, char *argv[])
 
   class_writer->add_method("addNums", "(II)I", METHOD_ACCESS_PUBLIC | METHOD_ACCESS_STATIC, 2, 2, code, 4);
 
+#if 0
+  printf("field_id=%d\n", class_writer->get_field_id("field1"));
+  printf("field_id=%d\n", class_writer->get_field_id("field2"));
+  printf("method_id=%d\n", class_writer->get_method_id("addNums"));
+#endif
+
   len = class_writer->write(buffer, sizeof(buffer));
   delete class_writer;
 
