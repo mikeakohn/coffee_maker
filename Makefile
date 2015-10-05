@@ -4,9 +4,9 @@ INCLUDES=-I/opt/jdk1.6.0_39/include/ -I/opt/jdk1.6.0_39/include/linux
 SEQUENCE=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 
 default:
-	g++ -c ClassReader.cxx $(CFLAGS)
+	gcc -c class_reader.c $(CFLAGS)
+	gcc -o coffee_dump coffee_dump.c class_reader.o $(CFLAGS)
 	g++ -c ClassWriter.cxx $(CFLAGS) -fPIC
-	g++ -o coffee_dump coffee_dump.cxx ClassReader.o $(CFLAGS)
 	g++ -o coffee_write coffee_write.cxx ClassWriter.o $(CFLAGS)
 	g++ -o libcoffee_maker.so coffee_maker.cxx ClassWriter.o \
 	  -shared -fPIC $(CFLAGS) $(INCLUDES)

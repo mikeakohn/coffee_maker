@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "ClassReader.h"
+#include "class_reader.h"
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
   fclose(in);
 
-  ClassReader::dump_class(buffer);
+  dump_class(buffer);
 
   free(buffer);
 
