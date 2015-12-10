@@ -11,15 +11,15 @@
                            (a[ptr+1] << 16) | \
                            (a[ptr+2] << 8) | \
                            (a[ptr+3]))
-#define GET_INT64(a, ptr) (long)\
-                          ((((uint64_t)a[ptr]) << 46) | \
+#define GET_INT64(a, ptr) (int64_t)\
+                          ((((uint64_t)a[ptr+0]) << 56) | \
                            (((uint64_t)a[ptr+1]) << 48) | \
                            (((uint64_t)a[ptr+2]) << 40) | \
                            (((uint64_t)a[ptr+3]) << 32) | \
                            (((uint64_t)a[ptr+4]) << 24) | \
                            (((uint64_t)a[ptr+5]) << 16) | \
                            (((uint64_t)a[ptr+6]) << 8) | \
-                           ((uint64_t)a[ptr+7]))
+                            ((uint64_t)a[ptr+7]))
 
 struct _constants
 {
@@ -100,8 +100,9 @@ static int dump_constants(uint8_t *buffer, int ptr, struct _constants *constants
         ptr += 5;
         break;
       case 5:
-        printf("tag=%d long: %ld\n", tag, GET_INT64(buffer, ptr + 1));
+        printf("tag=%d long: 0x%lx\n", tag, GET_INT64(buffer, ptr + 1));
         ptr += 9;
+        index++;
         break;
       case 6:
         l = GET_INT64(buffer, ptr + 1);
@@ -109,6 +110,7 @@ static int dump_constants(uint8_t *buffer, int ptr, struct _constants *constants
         d = *(double *)temp;
         printf("tag=%d double: %f\n", tag, d);
         ptr += 9;
+        index++;
         break;
       case 7:
         printf("tag=%d class: %d\n", tag, GET_INT16(buffer, ptr + 1));
