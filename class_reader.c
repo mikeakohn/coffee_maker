@@ -1,3 +1,14 @@
+/**
+ *  Coffee Maker
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: http://www.mikekohn.net/
+ * License: BSD
+ *
+ * Copyright 2015-2016 by Michael Kohn
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
