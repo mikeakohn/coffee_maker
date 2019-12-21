@@ -1,6 +1,6 @@
 
 CFLAGS=-O3 -Wall -g
-INCLUDES=-I/opt/jdk1.6.0_39/include/ -I/opt/jdk1.6.0_39/include/linux
+INCLUDES=-I/usr/lib/jvm/java-8-openjdk-amd64/include -I/usr/lib/jvm/java-8-openjdk-amd64/include/linux
 SEQUENCE=0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19
 
 default:
