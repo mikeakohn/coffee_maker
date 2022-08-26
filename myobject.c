@@ -2,10 +2,10 @@
  *  Coffee Maker
  *  Author: Michael Kohn
  *   Email: mike@mikekohn.net
- *     Web: http://www.mikekohn.net/
+ *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2016 by Michael Kohn
+ * Copyright 2015-2022 by Michael Kohn
  *
  */
 
@@ -168,5 +168,4 @@ JNIEXPORT void JNICALL Java_MyObject_jniLoad(
   //(*env)->ReleaseByteArrayElements(env, array, (int8_t *)data, 0);
   (*env)->ReleasePrimitiveArrayCritical(env, array, data, 0);
 }
-
 

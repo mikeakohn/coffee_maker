@@ -2,10 +2,10 @@
  *  Coffee Maker
  *  Author: Michael Kohn
  *   Email: mike@mikekohn.net
- *     Web: http://www.mikekohn.net/
+ *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2016 by Michael Kohn
+ * Copyright 2015-2022 by Michael Kohn
  *
  */
 
@@ -16,21 +16,26 @@
 
 #include "class_reader.h"
 
-#define GET_INT16(a, ptr) ((a[ptr] << 8) | \
-                           (a[ptr+1]))
-#define GET_INT32(a, ptr) ((a[ptr] << 24) | \
-                           (a[ptr+1] << 16) | \
-                           (a[ptr+2] << 8) | \
-                           (a[ptr+3]))
-#define GET_INT64(a, ptr) (int64_t)\
-                          ((((uint64_t)a[ptr+0]) << 56) | \
-                           (((uint64_t)a[ptr+1]) << 48) | \
-                           (((uint64_t)a[ptr+2]) << 40) | \
-                           (((uint64_t)a[ptr+3]) << 32) | \
-                           (((uint64_t)a[ptr+4]) << 24) | \
-                           (((uint64_t)a[ptr+5]) << 16) | \
-                           (((uint64_t)a[ptr+6]) << 8) | \
-                            ((uint64_t)a[ptr+7]))
+#define GET_INT16(a, ptr) \
+  ((a[ptr] << 8) | \
+  (a[ptr+1]))
+
+#define GET_INT32(a, ptr) \
+  ((a[ptr] << 24) | \
+   (a[ptr+1] << 16) | \
+   (a[ptr+2] << 8) | \
+   (a[ptr+3]))
+
+#define GET_INT64(a, ptr) \
+    (int64_t)\
+ ((((uint64_t)a[ptr+0]) << 56) | \
+  (((uint64_t)a[ptr+1]) << 48) | \
+  (((uint64_t)a[ptr+2]) << 40) | \
+  (((uint64_t)a[ptr+3]) << 32) | \
+  (((uint64_t)a[ptr+4]) << 24) | \
+  (((uint64_t)a[ptr+5]) << 16) | \
+  (((uint64_t)a[ptr+6]) << 8) | \
+   ((uint64_t)a[ptr+7]))
 
 struct _constants
 {
@@ -42,7 +47,7 @@ static int dump_header(uint8_t *buffer)
 {
   const char *version;
 
-  switch(GET_INT16(buffer, 6))
+  switch (GET_INT16(buffer, 6))
   {
     case 45: version = "1.1"; break;
     case 46: version = "1.2"; break;
@@ -52,6 +57,16 @@ static int dump_header(uint8_t *buffer)
     case 50: version = "6.0"; break;
     case 51: version = "7"; break;
     case 52: version = "8"; break;
+    case 53: version = "9"; break;
+    case 54: version = "10"; break;
+    case 55: version = "11"; break;
+    case 56: version = "12"; break;
+    case 57: version = "13"; break;
+    case 58: version = "14"; break;
+    case 59: version = "15"; break;
+    case 60: version = "16"; break;
+    case 61: version = "17"; break;
+    case 62: version = "18"; break;
     default: version = "???"; break;
   }
 
@@ -64,7 +79,10 @@ static int dump_header(uint8_t *buffer)
   return 8;
 }
 
-static int dump_constants(uint8_t *buffer, int ptr, struct _constants *constants)
+static int dump_constants(
+  uint8_t *buffer,
+  int ptr,
+  struct _constants *constants)
 {
   uint16_t constant_count = GET_INT16(buffer, ptr);
   int index;
@@ -90,7 +108,7 @@ static int dump_constants(uint8_t *buffer, int ptr, struct _constants *constants
     printf("%d) ", index + 1);
     tag = buffer[ptr];
 
-    switch(tag)
+    switch (tag)
     {
       case 1:
         count = GET_INT16(buffer, ptr + 1);
@@ -248,11 +266,13 @@ static int dump_info(uint8_t *buffer, int ptr, struct _constants *constants)
   return ptr + 6;
 }
 
-static int dump_interfaces(uint8_t *buffer, int ptr, struct _constants *constants)
+static int dump_interfaces(
+  uint8_t *buffer,
+  int ptr,
+  struct _constants *constants)
 {
   int interface_count = GET_INT16(buffer, ptr);
   uint16_t name_index;
-  uint8_t tag;
   int i;
 
   ptr += 2;
@@ -262,20 +282,22 @@ static int dump_interfaces(uint8_t *buffer, int ptr, struct _constants *constant
 
   for (i = 0; i < interface_count; i++)
   {
-    tag = buffer[ptr];
     name_index = GET_INT16(buffer, ptr + 1);
 
-    printf("%d) tag=%d name_index=%d ", i, tag, name_index);
+    printf("%d) name_index=%d ", i, name_index);
     show_class(buffer, constants, name_index);
     printf("\n");
 
-    ptr += 3;
+    ptr += 2;
   }
 
   return ptr;
 }
 
-static int dump_attributes(uint8_t *buffer, int ptr, struct _constants *constants)
+static int dump_attributes(
+  uint8_t *buffer,
+  int ptr,
+  struct _constants *constants)
 {
   uint16_t attribute_name_index;
   uint32_t attribute_length;
@@ -438,6 +460,4 @@ int dump_class(uint8_t *buffer)
 
   return 0;
 }
-
-
 
