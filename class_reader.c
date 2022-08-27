@@ -196,6 +196,13 @@ static int dump_constants(
                GET_INT32(buffer, ptr + 1));
         ptr += 5;
         break;
+      case 19:
+      case 20:
+        printf("tag=%d ??: data=%d\n",
+               tag,
+               GET_INT16(buffer, ptr + 1));
+        ptr += 3;
+        break;
       default:
         printf("Unknown constant tag %d at %d\n", tag, ptr);
         break;
