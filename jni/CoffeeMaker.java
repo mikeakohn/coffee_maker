@@ -1,3 +1,16 @@
+/**
+ *  Coffee Maker
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: https://www.mikekohn.net/
+ * License: BSD
+ *
+ * Copyright 2015-2023 by Michael Kohn
+ *
+ * This is the Java part of the JNI code for CoffeeMaker.cxx. This has
+ * code for generating class files in memory that can be loaded into the
+ * JVM at runtime.
+*/
 
 import java.lang.ClassLoader;
 

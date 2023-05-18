@@ -5,7 +5,7 @@
  *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2022 by Michael Kohn
+ * Copyright 2015-2023 by Michael Kohn
  *
  */
 
@@ -50,7 +50,7 @@ jfieldID field_var17;
 jfieldID field_var18;
 jfieldID field_var19;
 
-JNIEXPORT void JNICALL Java_MyObject_start(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_TestData_start(JNIEnv *env, jobject obj)
 {
   asm __volatile__
   (
@@ -58,7 +58,7 @@ JNIEXPORT void JNICALL Java_MyObject_start(JNIEnv *env, jobject obj)
   );
 }
 
-JNIEXPORT void JNICALL Java_MyObject_stop(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_TestData_stop(JNIEnv *env, jobject obj)
 {
   asm __volatile__
   (
@@ -68,7 +68,7 @@ JNIEXPORT void JNICALL Java_MyObject_stop(JNIEnv *env, jobject obj)
   printf("cpu=%ld\n", perf_stop.count - perf_start.count);
 }
 
-JNIEXPORT void JNICALL Java_MyObject_init(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_TestData_init(JNIEnv *env, jobject obj)
 {
   jclass cls = (*env)->GetObjectClass(env, obj);
   field_var0 = (*env)->GetFieldID(env, cls, "field0", "I");
@@ -93,7 +93,7 @@ JNIEXPORT void JNICALL Java_MyObject_init(JNIEnv *env, jobject obj)
   field_var19 = (*env)->GetFieldID(env, cls, "field19", "I");
 }
 
-JNIEXPORT void JNICALL Java_MyObject_jniLoad(
+JNIEXPORT void JNICALL Java_TestData_jniLoad(
   JNIEnv *env,
   jobject obj,
   jbyteArray array)

@@ -5,7 +5,7 @@
  *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2022 by Michael Kohn
+ * Copyright 2015-2023 by Michael Kohn
  *
  */
 

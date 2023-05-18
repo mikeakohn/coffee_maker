@@ -1,7 +1,7 @@
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class MyObject
+public class TestData
 {
   ByteBuffer byte_buffer;
 
@@ -134,7 +134,7 @@ public class MyObject
 
   static
   {
-    System.loadLibrary("myobject");
+    System.loadLibrary("testdata");
   }
 }
 

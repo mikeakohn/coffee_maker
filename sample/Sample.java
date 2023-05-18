@@ -1,13 +1,31 @@
+/**
+ *  Coffee Maker
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: https://www.mikekohn.net/
+ * License: BSD
+ *
+ * Copyright 2015-2023 by Michael Kohn
+ *
+ * This is a test program that generates a class file in memory
+ * using CoffeeMaker. The code sets a bunch of fields in the TestData
+ * class by loading up some hand-written Java byte code and loads it
+ * into a class as a byte[] and then loaded in the Java JVM.
+ *
+ * This also tests setting the field using JNI to compare the speed
+ * between a Java generated method and straight JNI.
+ *
+*/
 
 import java.lang.reflect.Method;
 
-public class Test
+public class Sample
 {
   public static byte[] generateReverseNums(CoffeeMaker coffee_maker)
   {
     byte[] code = new byte[7];
 
-    int index = coffee_maker.getFieldId("field0", "I", "MyObject");
+    int index = coffee_maker.getFieldId("field0", "I", "TestData");
 
     code[0] = 0x2a;  // aload_0
     code[1] = 0x10;  // bipush 10
@@ -22,7 +40,7 @@ public class Test
 
   public static void main(String[] args)
   {
-    MyObject my_object = new MyObject();
+    TestData my_object = new TestData();
     CoffeeMaker coffee_maker = new CoffeeMaker();
     int i;
     byte[] data;
@@ -39,7 +57,7 @@ public class Test
        (short)(CoffeeMaker.METHOD_ACCESS_PUBLIC |
                CoffeeMaker.METHOD_ACCESS_STATIC),
        2, 2, add_nums);
-    coffee_maker.addMethod("reverseNums", "(LMyObject;[B)V",
+    coffee_maker.addMethod("reverseNums", "(LTestData;[B)V",
        (short)(CoffeeMaker.METHOD_ACCESS_PUBLIC |
                CoffeeMaker.METHOD_ACCESS_STATIC),
        2, 2, reverse_nums);
@@ -49,7 +67,7 @@ public class Test
 
     Class<?> cls = coffee_maker.load();
     Class add_nums_args[] = { int.class, int.class };
-    Class reverse_nums_args[] = { MyObject.class, byte[].class };
+    Class reverse_nums_args[] = { TestData.class, byte[].class };
     Method addNums = null;
     Method reverseNums = null;
 
@@ -71,25 +89,25 @@ public class Test
 
     for (i = 0; i < 10; i++)
     {
-      MyObject.start();
+      TestData.start();
       my_object.jniLoad(data);
-      MyObject.stop();
+      TestData.stop();
     }
 
     System.out.println("--- Testing Java (from source) ---");
 
     for (i = 0; i < 10; i++)
     {
-      MyObject.start();
+      TestData.start();
       my_object.javaLoad(data);
-      MyObject.stop();
+      TestData.stop();
     }
 
     System.out.println("--- Testing Java (from generated) ---");
 
     for (i = 0; i < 10; i++)
     {
-      MyObject.start();
+      TestData.start();
       try
       {
         reverseNums.invoke(null, my_object, data);
@@ -99,10 +117,10 @@ public class Test
         System.out.println(e.toString());
         System.out.println(e.getCause().toString());
       }
-      MyObject.stop();
+      TestData.stop();
     }
 
-System.out.println(my_object.field0);
+    System.out.println(my_object.field0);
   }
 }
 

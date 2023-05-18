@@ -2,10 +2,12 @@
  *  Coffee Maker
  *  Author: Michael Kohn
  *   Email: mike@mikekohn.net
- *     Web: http://www.mikekohn.net/
+ *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2016 by Michael Kohn
+ * Copyright 2015-2023 by Michael Kohn
+ *
+ * Test program to show how CoffeeWriter.cxx works.
  *
  */
 
@@ -24,7 +26,7 @@ int main(int argc, char *argv[])
   int len;
 
   printf("\ncoffee_maker by Michael Kohn\n"
-         "http://www.mikekohn.net/\n\n");
+         "https://www.mikekohn.net/\n\n");
 
   if (argc != 2)
   {
@@ -60,8 +62,8 @@ int main(int argc, char *argv[])
   printf("field_id=%d\n", class_writer->get_field_id("field2"));
   printf("method_id=%d\n", class_writer->get_method_id("addNums"));
 
-  printf("field_id=%d\n", class_writer->get_method_id("field1", "I", "MyObject"));
-  printf("method_id=%d\n", class_writer->get_method_id("start", "()V", "MyObject"));
+  printf("field_id=%d\n", class_writer->get_method_id("field1", "I", "TestData"));
+  printf("method_id=%d\n", class_writer->get_method_id("start", "()V", "TestData"));
   printf("field_id=%d\n", class_writer->get_field_id("field1"));
 #endif
 

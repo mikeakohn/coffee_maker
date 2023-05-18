@@ -2,10 +2,10 @@
  *  Coffee Maker
  *  Author: Michael Kohn
  *   Email: mike@mikekohn.net
- *     Web: http://www.mikekohn.net/
+ *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2016 by Michael Kohn
+ * Copyright 2015-2023 by Michael Kohn
  *
  */
 
@@ -285,5 +285,4 @@ printf("\n");
 #ifdef __cplusplus
 }
 #endif
-
 

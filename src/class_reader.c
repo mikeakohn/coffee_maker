@@ -5,7 +5,7 @@
  *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2022 by Michael Kohn
+ * Copyright 2015-2023 by Michael Kohn
  *
  */
 
@@ -456,7 +456,6 @@ int dump_class(uint8_t *buffer)
 
   printf("--------------------------------------------------------\n");
   printf("Attributes Count: %d\n", attributes_count);
-
 
   for (i = 0; i < attributes_count; i++)
   {

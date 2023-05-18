@@ -2,10 +2,10 @@
  *  Coffee Maker
  *  Author: Michael Kohn
  *   Email: mike@mikekohn.net
- *     Web: http://www.mikekohn.net/
+ *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2016 by Michael Kohn
+ * Copyright 2015-2023 by Michael Kohn
  *
  */
 
@@ -37,7 +37,10 @@ ClassWriter::~ClassWriter()
   }
 }
 
-int ClassWriter::add_field(std::string name, std::string type, uint16_t access_flags)
+int ClassWriter::add_field(
+  std::string name,
+  std::string type,
+  uint16_t access_flags)
 {
   Constant constant;
   Field field;
@@ -61,7 +64,14 @@ int ClassWriter::add_field(std::string name, std::string type, uint16_t access_f
   return 0;
 }
 
-int ClassWriter::add_method(std::string name, std::string type, uint16_t access_flags, int max_stack, int max_locals, uint8_t *code, int code_length)
+int ClassWriter::add_method(
+  std::string name,
+  std::string type,
+  uint16_t access_flags,
+  int max_stack,
+  int max_locals,
+  uint8_t *code,
+  int code_length)
 {
   Constant constant;
   Method method;
@@ -142,7 +152,10 @@ int ClassWriter::get_method_id(std::string name)
   return -1;
 }
 
-int ClassWriter::get_field_id(std::string name, std::string type, std::string class_name)
+int ClassWriter::get_field_id(
+  std::string name,
+  std::string type,
+  std::string class_name)
 {
   Constant constant;
   int index;
@@ -172,7 +185,10 @@ int ClassWriter::get_field_id(std::string name, std::string type, std::string cl
   return constants.size() - 1;
 }
 
-int ClassWriter::get_method_id(std::string name, std::string type, std::string class_name)
+int ClassWriter::get_method_id(
+  std::string name,
+  std::string type,
+  std::string class_name)
 {
   Constant constant;
   int index;
@@ -275,7 +291,9 @@ int ClassWriter::get_constant_class(std::string &name)
   return constants.size() - 1;
 }
 
-int ClassWriter::get_constant_name_and_type(std::string &name, std::string &type)
+int ClassWriter::get_constant_name_and_type(
+  std::string &name,
+  std::string &type)
 {
   Constant constant;
 
@@ -476,5 +494,4 @@ int ClassWriter::write_attributes(uint8_t *buffer, int len, int &ptr)
 
   return 0;
 }
-
 

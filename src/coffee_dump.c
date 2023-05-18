@@ -5,7 +5,9 @@
  *     Web: https://www.mikekohn.net/
  * License: BSD
  *
- * Copyright 2015-2022 by Michael Kohn
+ * Copyright 2015-2023 by Michael Kohn
+ *
+ * Dump a class file to readable text for debugging.
  *
  */
 
@@ -25,7 +27,7 @@ int main(int argc, char *argv[])
   uint8_t *buffer;
 
   printf("\ncoffee_dump by Michael Kohn\n"
-         "http://www.mikekohn.net/\n\n");
+         "https://www.mikekohn.net/\n\n");
 
   if (argc != 2)
   {
