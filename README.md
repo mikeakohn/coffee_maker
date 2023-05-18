@@ -22,7 +22,7 @@ Test:
 
 A full explanation of this program is here:
 
-https://www.mikekohn.net/software/java_in_memory_class_reader.php
+https://www.mikekohn.net/software/java_class_parser.php
 
 Building
 ========
