@@ -231,6 +231,105 @@ static void show_name(uint8_t *buffer, struct _constants *constants, int index)
   }
 }
 
+static int compare_name(
+  uint8_t *buffer,
+  struct _constants *constants,
+  int index,
+  const char *name)
+{
+  uint16_t count;
+  uint8_t tag;
+  int ptr,i;
+
+  ptr = constants->index[index];
+  tag = buffer[ptr];
+
+  if (tag != 1) { return -1; }
+
+  count = GET_INT16(buffer, ptr + 1);
+
+  for (i = 0; i < count; i++)
+  {
+    if (buffer[ptr + 3 + i] != name[i]) { return -1; }
+  }
+
+  return 0;
+}
+
+static void show_return_type(
+  uint8_t *buffer,
+  struct _constants *constants,
+  int index)
+{
+  uint16_t count;
+  uint8_t tag;
+  int ptr,i;
+
+  ptr = constants->index[index];
+  tag = buffer[ptr];
+
+  if (tag != 1) { return; }
+
+  count = GET_INT16(buffer, ptr + 1);
+  int paren = 1;
+
+  for (i = 1; i < count; i++)
+  {
+    char c = buffer[ptr + 3 + i];
+
+    if (c == '(')
+    {
+      paren++;
+    }
+      else
+    if (c == ')')
+    {
+      paren--;
+      continue;
+    }
+
+    if (paren > 0) { continue; }
+
+    printf("%c", c);
+  }
+}
+
+static void show_parameters(
+  uint8_t *buffer,
+  struct _constants *constants,
+  int index)
+{
+  uint16_t count;
+  uint8_t tag;
+  int ptr,i;
+
+  ptr = constants->index[index];
+  tag = buffer[ptr];
+
+  if (tag != 1) { return; }
+
+  count = GET_INT16(buffer, ptr + 1);
+  int paren = 0;
+
+  for (i = 0; i < count; i++)
+  {
+    char c = buffer[ptr + 3 + i];
+
+    if (c == '(')
+    {
+      paren++;
+    }
+      else
+    if (c == ')')
+    {
+      paren--;
+    }
+
+    printf("%c", c);
+    if (paren == 0) { break; }
+  }
+}
+
 static void show_class(uint8_t *buffer, struct _constants *constants, int index)
 {
   uint8_t tag;
@@ -304,6 +403,92 @@ static int dump_interfaces(
 static int dump_attributes(
   uint8_t *buffer,
   int ptr,
+  struct _constants *constants);
+
+static int dump_code(
+  uint8_t *buffer,
+  int ptr,
+  int length,
+  struct _constants *constants)
+{
+  uint16_t max_stack;
+  uint16_t max_locals;
+  uint32_t code_length;
+  uint16_t exception_table_length;
+  uint16_t attribute_count;
+  uint32_t k, n;
+
+  ptr += 6;
+
+  max_stack = GET_INT16(buffer, ptr + 0);
+  max_locals = GET_INT16(buffer, ptr + 2);
+  code_length = GET_INT32(buffer, ptr + 4);
+
+  printf("      ");
+  for (k = 0; k < 8; k++) { printf(" %02x", buffer[ptr + k]); }
+  printf("\n");
+
+  printf("     max_stack=%d max_locals=%d code_length=%d\n",
+    max_stack, max_locals, code_length);
+
+  ptr += 8;
+
+  for (k = 0; k < code_length; k++)
+  {
+    if ((k & 7) == 0)
+    {
+      if (k != 0) { printf("\n"); }
+      printf("      ");
+    }
+    printf(" %02x", buffer[ptr++]);
+  }
+
+  printf("\n");
+
+  exception_table_length = GET_INT16(buffer, ptr);
+
+  printf("       %02x %02x\n", buffer[ptr], buffer[ptr + 2]);
+  printf("     exception_table_length=%d\n", exception_table_length);
+
+  ptr += 2;
+
+  for (n = 0; n < exception_table_length; n++)
+  {
+    int start_pc = GET_INT16(buffer, ptr + 0);
+    int end_pc = GET_INT16(buffer, ptr + 2);
+    int handler_pc = GET_INT16(buffer, ptr + 4);
+    int catch_type = GET_INT16(buffer, ptr + 6);
+
+    printf("      ");
+    for (k = 0; k < 8; k++) { printf(" %02x", buffer[ptr + k]); }
+    printf("\n");
+
+    printf("     start_pc=%d end_pc=%d handler_pc=%d catch_type=%d\n",
+      start_pc,
+      end_pc,
+      handler_pc,
+      catch_type);
+
+    ptr += 8;
+  }
+
+  attribute_count = GET_INT16(buffer, ptr);
+  printf("       %02x %02x\n", buffer[ptr], buffer[ptr + 2]);
+  printf("     attribute_count=%d\n", attribute_count);
+
+  ptr += 2;
+
+  for (n = 0; n < attribute_count; n++)
+  {
+    ptr += dump_attributes(buffer, ptr, constants);
+  }
+
+  return 0;
+}
+
+static int dump_attributes(
+  uint8_t *buffer,
+  int ptr,
   struct _constants *constants)
 {
   uint16_t attribute_name_index;
@@ -313,9 +498,17 @@ static int dump_attributes(
   attribute_name_index = GET_INT16(buffer, ptr);
   attribute_length = GET_INT32(buffer, ptr + 2);
 
-  printf("    ");
+  printf("       %02x %04x\n", attribute_name_index, attribute_length);
+
+  printf("     ");
   show_name(buffer, constants, attribute_name_index);
   printf(" (%d) length=%d\n", attribute_name_index, attribute_length);
+
+  if (compare_name(buffer, constants, attribute_name_index, "Code") == 0)
+  {
+    dump_code(buffer, ptr, attribute_length, constants);
+    return ptr + 6 + attribute_length;
+  }
 
   ptr += 6;
   for (k = 0; k < attribute_length; k++)
@@ -323,7 +516,7 @@ static int dump_attributes(
     if ((k & 7) == 0)
     {
       if (k != 0) { printf("\n"); }
-      printf("    ");
+      printf("      ");
     }
     printf(" %02x", buffer[ptr++]);
   }
@@ -404,9 +597,22 @@ static int dump_methods(uint8_t *buffer, int ptr, struct _constants *constants)
     descriptor_index = GET_INT16(buffer, ptr + 4);
     attributes_count = GET_INT16(buffer, ptr + 6);
 
-    printf("%3d) name_index=%d descriptor_index=%d attributes_count=%d\n",
-           i, name_index, descriptor_index, attributes_count);
-    printf("    ");
+    printf("%3d) ", i);
+    show_return_type(buffer, constants, descriptor_index);
+    printf(" ");
+    show_name(buffer, constants, name_index);
+    show_parameters(buffer, constants, descriptor_index);
+    printf("\n");
+
+    printf("       %02x %02x %02x %02x\n",
+      access_flags,
+      name_index,
+      descriptor_index,
+      attributes_count);
+
+    printf("     name_index=%d descriptor_index=%d attributes_count=%d:\n",
+           name_index, descriptor_index, attributes_count);
+    printf("       ");
     if ((access_flags & 0x0001) != 0) { printf("public "); }
     if ((access_flags & 0x0002) != 0) { printf("private "); }
     if ((access_flags & 0x0004) != 0) { printf("protected "); }
