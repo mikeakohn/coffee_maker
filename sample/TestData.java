@@ -28,7 +28,6 @@ public class TestData
 
   public void javaLoad(byte[] data)
   {
-    int ptr = data.length - 4;
     field0 = data[76] | (data[77] << 8) | (data[78] << 16) | (data[79] << 24);
     field1 = data[72] | (data[73] << 8) | (data[74] << 16) | (data[75] << 24);
     field2 = data[68] | (data[69] << 8) | (data[70] << 16) | (data[71] << 24);
@@ -129,8 +128,8 @@ public class TestData
 
   native void init();
   native void jniLoad(byte[] data);
-  native static void start();
-  native static void stop();
+  native static void timerStart();
+  native static void timerStop();
 
   static
   {

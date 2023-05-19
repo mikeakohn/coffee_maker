@@ -50,7 +50,7 @@ jfieldID field_var17;
 jfieldID field_var18;
 jfieldID field_var19;
 
-JNIEXPORT void JNICALL Java_TestData_start(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_TestData_timerStart(JNIEnv *env, jobject obj)
 {
   asm __volatile__
   (
@@ -58,7 +58,7 @@ JNIEXPORT void JNICALL Java_TestData_start(JNIEnv *env, jobject obj)
   );
 }
 
-JNIEXPORT void JNICALL Java_TestData_stop(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_TestData_timerStop(JNIEnv *env, jobject obj)
 {
   asm __volatile__
   (

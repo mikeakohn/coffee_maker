@@ -7,6 +7,6 @@ cd sample/
 echo "Normal"
 LD_LIBRARY_PATH=.. java -classpath ../jni:. Sample ${SEQUENCE}
 
-echo "Force Java JIT compiler"
+echo "Force Java JIT compiler with -Xcomp"
 LD_LIBRARY_PATH=.. java -Xcomp -classpath ../jni:. Sample ${SEQUENCE}
 

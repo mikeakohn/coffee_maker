@@ -76,6 +76,15 @@ static int dump_header(uint8_t *buffer)
   printf(" Minor Version: %d\n", GET_INT16(buffer, 4));
   printf(" Major Version: %d (%s)\n", GET_INT16(buffer, 6), version);
 
+  if (buffer[0] != 0xca ||
+      buffer[1] != 0xfe ||
+      buffer[2] != 0xba ||
+      buffer[3] != 0xbe)
+  {
+    printf("\nError: Not a Java .class file.\n");
+    return -1;
+  }
+
   return 8;
 }
 
@@ -651,6 +660,8 @@ int dump_class(uint8_t *buffer)
   memset(&constants, 0, sizeof(constants));
 
   ptr = dump_header(buffer);
+  if (ptr < 0) { return -1; }
+
   ptr = dump_constants(buffer, ptr, &constants);
   ptr = dump_info(buffer, ptr, &constants);
   ptr = dump_interfaces(buffer, ptr, &constants);

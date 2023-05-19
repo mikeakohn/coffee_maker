@@ -23,24 +23,59 @@ public class Sample
 {
   public static byte[] generateReverseNums(CoffeeMaker coffee_maker)
   {
-    byte[] code = new byte[7];
+    byte[] code = new byte[641];
+    int field_num = 0;
+    int ptr = 0;
+    int n;
 
-    int index = coffee_maker.getFieldId("field0", "I", "TestData");
+    for (n = 80; n > 0; n = n - 4)
+    {
+      code[ptr++] = 0x2a; // aload_0
+      code[ptr++] = 0x2b; // aload_1
+      code[ptr++] = 0x10; // bipush n - 4
+      code[ptr++] = (byte)(n - 4);
+      code[ptr++] = 0x33; // baload
+      code[ptr++] = 0x2b; // aload_1
+      code[ptr++] = 0x10; // bipush n - 3
+      code[ptr++] = (byte)(n - 3);
+      code[ptr++] = 0x33; // baload
+      code[ptr++] = 0x10; // bipush 8
+      code[ptr++] = 8;
+      code[ptr++] = 0x78; // ishl
+      code[ptr++] = (byte)0x80; // ior
+      code[ptr++] = 0x2b; // aload_1
+      code[ptr++] = 0x10; // bipush n - 2
+      code[ptr++] = (byte)(n - 2);
+      code[ptr++] = 0x33; // baload
+      code[ptr++] = 0x10; // bipush 16
+      code[ptr++] = 16;
+      code[ptr++] = 0x78; // ishl
+      code[ptr++] = (byte)0x80; // ior
+      code[ptr++] = 0x2b; // aload_1
+      code[ptr++] = 0x10; // bipush n - 1
+      code[ptr++] = (byte)(n - 1);
+      code[ptr++] = 0x33; // baload
+      code[ptr++] = 0x10; // bipush 24
+      code[ptr++] = 24;
+      code[ptr++] = 0x78; // ishl
+      code[ptr++] = (byte)0x80; // ior
 
-    code[0] = 0x2a;  // aload_0
-    code[1] = 0x10;  // bipush 10
-    code[2] =   10;
-    code[3] =  -75;  // putfield
-    code[4] = (byte)((index >> 8) & 0xff);
-    code[5] = (byte)(index & 0xff);
-    code[6] =  -79;  // return
+      int index = coffee_maker.getFieldId("field" + field_num, "I", "TestData");
+      code[ptr++] =  -75;  // putfield
+      code[ptr++] = (byte)((index >> 8) & 0xff);
+      code[ptr++] = (byte)(index & 0xff);
+
+      field_num++;
+    }
+
+    code[ptr++] =  -79;  // return
 
     return code;
   }
 
   public static void main(String[] args)
   {
-    TestData my_object = new TestData();
+    TestData test_data = new TestData();
     CoffeeMaker coffee_maker = new CoffeeMaker();
     int i;
     byte[] data;
@@ -60,7 +95,7 @@ public class Sample
     coffee_maker.addMethod("reverseNums", "(LTestData;[B)V",
        (short)(CoffeeMaker.METHOD_ACCESS_PUBLIC |
                CoffeeMaker.METHOD_ACCESS_STATIC),
-       2, 2, reverse_nums);
+       4, 2, reverse_nums);
 
     //System.out.println(coffee_maker.getFieldId("field1"));
     //System.out.println(coffee_maker.getMethodId("addNums"));
@@ -84,43 +119,53 @@ public class Sample
     }
 
     data = new byte[args.length * 4];
+    test_data.initByteBuffer(data);
 
     System.out.println("--- Testing JNI ---");
 
     for (i = 0; i < 10; i++)
     {
-      TestData.start();
-      my_object.jniLoad(data);
-      TestData.stop();
+      TestData.timerStart();
+      test_data.jniLoad(data);
+      TestData.timerStop();
     }
 
-    System.out.println("--- Testing Java (from source) ---");
+    System.out.println("--- Testing Java (from source javaLoad(byte[])) ---");
 
     for (i = 0; i < 10; i++)
     {
-      TestData.start();
-      my_object.javaLoad(data);
-      TestData.stop();
+      TestData.timerStart();
+      test_data.javaLoad(data);
+      TestData.timerStop();
+    }
+
+    System.out.println("--- Testing Java (from source javaLoadByteBuffer(byte[])) ---");
+
+    for (i = 0; i < 10; i++)
+    {
+      TestData.timerStart();
+      test_data.javaLoadByteBuffer(data);
+      TestData.timerStop();
     }
 
     System.out.println("--- Testing Java (from generated) ---");
 
     for (i = 0; i < 10; i++)
     {
-      TestData.start();
+      TestData.timerStart();
       try
       {
-        reverseNums.invoke(null, my_object, data);
+        reverseNums.invoke(null, test_data, data);
       }
       catch (Exception e)
       {
         System.out.println(e.toString());
         System.out.println(e.getCause().toString());
       }
-      TestData.stop();
+      TestData.timerStop();
     }
 
-    System.out.println(my_object.field0);
+    System.out.println(test_data.field0);
   }
 }
 
