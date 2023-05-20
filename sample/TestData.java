@@ -96,7 +96,7 @@ public class TestData
     ptr -= 4;
   }
 
-  public void reverseNums()
+  public void reverseNums(byte[] data)
   {
     System.out.println("Wrong one!");
   }

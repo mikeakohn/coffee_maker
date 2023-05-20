@@ -296,6 +296,9 @@ public class Sample
     for (int i = 0; i < 10; i++)
     {
       TestData.timerStart();
+      test_data.reverseNums(data);
+/*
+      // Calling "invoke" like this appears to add 3000 CPU cycles or so.
       try
       {
         reverseNums.invoke(test_data, data);
@@ -305,6 +308,7 @@ public class Sample
         System.out.println(e.toString());
         System.out.println(e.getCause().toString());
       }
+*/
       TestData.timerStop();
     }
 
