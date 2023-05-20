@@ -96,6 +96,11 @@ public class TestData
     ptr -= 4;
   }
 
+  public void reverseNums()
+  {
+    System.out.println("Wrong one!");
+  }
+
   public void initByteBuffer(byte[] data)
   {
     byte_buffer = ByteBuffer.wrap(data);

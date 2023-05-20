@@ -40,7 +40,8 @@ ClassWriter::~ClassWriter()
 int ClassWriter::add_field(
   std::string name,
   std::string type,
-  uint16_t access_flags)
+  uint16_t access_flags,
+  bool is_inherited)
 {
   Constant constant;
   Field field;
@@ -54,10 +55,13 @@ int ClassWriter::add_field(
   constant.class_index = get_constant_class(class_name);
   constant.name_and_type = get_constant_name_and_type(name, type);
 
-  field.access_flags = access_flags;
-  field.name = get_constant_utf8(name);
-  field.type = get_constant_utf8(type);
-  fields.push_back(field);
+  if (! is_inherited)
+  {
+    field.access_flags = access_flags;
+    field.name = get_constant_utf8(name);
+    field.type = get_constant_utf8(type);
+    fields.push_back(field);
+  }
 
   constants.push_back(constant);
 
@@ -96,6 +100,22 @@ int ClassWriter::add_method(
   memcpy(method.code, code, code_length);
   method.code_length = code_length;
   methods.push_back(method);
+
+  constants.push_back(constant);
+
+  return 0;
+}
+
+int ClassWriter::add_method_external(
+  std::string name,
+  std::string type,
+  std::string class_name)
+{
+  Constant constant;
+
+  constant.tag = 10;
+  constant.class_index = get_constant_class(class_name);
+  constant.name_and_type = get_constant_name_and_type(name, type);
 
   constants.push_back(constant);
 

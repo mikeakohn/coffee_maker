@@ -122,7 +122,7 @@ JNIEXPORT void JNICALL Java_CoffeeMaker_setAccessFlags(
 }
 
 // native public int addField(String name, String type, short access_flags);
-JNIEXPORT int JNICALL Java_CoffeeMaker_addField(
+JNIEXPORT int JNICALL Java_CoffeeMaker_addField__Ljava_lang_String_2Ljava_lang_String_2S(
   JNIEnv *env,
   jobject obj,
   jstring name_s,
@@ -136,6 +136,29 @@ JNIEXPORT int JNICALL Java_CoffeeMaker_addField(
   const char *type = env->GetStringUTFChars(type_s, 0);
 
   class_writer->add_field(name, type, access_flags);
+
+  env->ReleaseStringUTFChars(name_s, name);
+  env->ReleaseStringUTFChars(type_s, type);
+
+  return 0;
+}
+
+// native public int addField(String name, String type, short access_flags, boolean_inherited);
+JNIEXPORT int JNICALL Java_CoffeeMaker_addField__Ljava_lang_String_2Ljava_lang_String_2SZ(
+  JNIEnv *env,
+  jobject obj,
+  jstring name_s,
+  jstring type_s,
+  jshort access_flags,
+  jboolean is_inherited)
+{
+  ClassWriter *class_writer;
+  class_writer = (ClassWriter *)env->GetLongField(obj, handle);
+
+  const char *name = env->GetStringUTFChars(name_s, 0);
+  const char *type = env->GetStringUTFChars(type_s, 0);
+
+  class_writer->add_field(name, type, access_flags, is_inherited);
 
   env->ReleaseStringUTFChars(name_s, name);
   env->ReleaseStringUTFChars(type_s, type);
@@ -167,6 +190,30 @@ JNIEXPORT int JNICALL Java_CoffeeMaker_addMethod(
   env->ReleaseStringUTFChars(name_s, name);
   env->ReleaseStringUTFChars(type_s, type);
   env->ReleaseByteArrayElements(code_bytes, (int8_t *)code, 0);
+
+  return 0;
+}
+
+// native public int getMethodExternal(String name, String type, String class_name);
+JNIEXPORT jint JNICALL Java_CoffeeMaker_addMethodExternal(
+  JNIEnv *env,
+  jobject obj,
+  jstring name_s,
+  jstring type_s,
+  jstring class_name_s)
+{
+  ClassWriter *class_writer;
+  class_writer = (ClassWriter *)env->GetLongField(obj, handle);
+
+  const char *name = env->GetStringUTFChars(name_s, 0);
+  const char *type = env->GetStringUTFChars(type_s, 0);
+  const char *class_name = env->GetStringUTFChars(class_name_s, 0);
+
+  class_writer->add_method_external(name, type, class_name);
+
+  env->ReleaseStringUTFChars(name_s, name);
+  env->ReleaseStringUTFChars(type_s, type);
+  env->ReleaseStringUTFChars(class_name_s, class_name);
 
   return 0;
 }

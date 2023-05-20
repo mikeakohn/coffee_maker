@@ -13,6 +13,10 @@
 */
 
 import java.lang.ClassLoader;
+// REMOVE
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class CoffeeMaker extends ClassLoader
 {
@@ -25,10 +29,13 @@ public class CoffeeMaker extends ClassLoader
   native public static void stop();
   native private long openClassWriter();
   native public void setClassName(String value);
+  native public void setSuperClass(String value);
   native public void setMajorVersion(int value);
   native public void setAccessFlags(int value);
   native public int addField(String name, String type, short access_flags);
+  native public int addField(String name, String type, short access_flags, boolean is_inherited);
   native public int addMethod(String name, String type, short access_flags, int max_stack, int max_locals, byte[] code);
+  native public int addMethodExternal(String name, String type, String class_name);
   native public int getFieldId(String name);
   native public int getMethodId(String name);
   native public int getFieldId(String name, String type, String class_name);
@@ -39,6 +46,19 @@ public class CoffeeMaker extends ClassLoader
   {
     byte[] code = create();
     Class<?> cls;
+
+/*
+try
+{
+FileOutputStream writer = new FileOutputStream("TestClass.class");
+writer.write(code);
+writer.close();
+}
+catch (Exception e)
+{
+  System.out.println(e.toString());
+}
+*/
 
     cls = defineClass(null, code, 0, code.length);
     resolveClass(cls);
@@ -90,3 +110,4 @@ public class CoffeeMaker extends ClassLoader
   public static final short METHOD_ACCESS_STRICT = 0x0800;
   public static final short METHOD_ACCESS_SYNTHETIC = 0x1000;
 }
+
