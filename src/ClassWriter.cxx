@@ -106,22 +106,6 @@ int ClassWriter::add_method(
   return 0;
 }
 
-int ClassWriter::add_method_external(
-  std::string name,
-  std::string type,
-  std::string class_name)
-{
-  Constant constant;
-
-  constant.tag = 10;
-  constant.class_index = get_constant_class(class_name);
-  constant.name_and_type = get_constant_name_and_type(name, type);
-
-  constants.push_back(constant);
-
-  return 0;
-}
-
 int ClassWriter::get_field_id(std::string name)
 {
   Constant constant;

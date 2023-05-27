@@ -251,7 +251,7 @@ public class Sample
     coffee_maker.setClassName("TestClass");
     coffee_maker.setSuperClass("TestData");
     coffee_maker.setAccessFlags(CoffeeMaker.CLASS_ACCESS_PUBLIC);
-    coffee_maker.addMethodExternal("<init>", "()V", "TestData");
+    coffee_maker.getMethodId("<init>", "()V", "TestData");
 
     for (int i = 0; i < 20; i++)
     {

@@ -35,7 +35,6 @@ public class CoffeeMaker extends ClassLoader
   native public int addField(String name, String type, short access_flags);
   native public int addField(String name, String type, short access_flags, boolean is_inherited);
   native public int addMethod(String name, String type, short access_flags, int max_stack, int max_locals, byte[] code);
-  native public int addMethodExternal(String name, String type, String class_name);
   native public int getFieldId(String name);
   native public int getMethodId(String name);
   native public int getFieldId(String name, String type, String class_name);

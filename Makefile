@@ -11,6 +11,7 @@ jni:
 
 clean:
 	@rm -f build/*.o
+	@rm -f python/*.so
 	@rm -f coffee_dump coffee_write *.so
 	@rm -f jni/*.class
 	@rm -f sample/*.class

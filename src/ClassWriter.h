@@ -114,19 +114,20 @@ public:
     uint8_t *code,
     int code_length);
 
-  int add_method_external(
-    std::string name,
-    std::string type,
-    std::string class_name);
-
   int get_field_id(std::string name);
   int get_method_id(std::string name);
 
+  // Will scan the ConstantPool for this field. If it doesn't exist it
+  // will add it without adding it to the list of fields. This is useful
+  // for referencing fields from other classes.
   int get_field_id(
     std::string name,
     std::string type,
     std::string class_name);
 
+  // Will scan the ConstantPool for this method. If it doesn't exist it
+  // will add it without adding it to the list of methods. This is useful
+  // for referencing methods from other classes.
   int get_method_id(
     std::string name,
     std::string type,
