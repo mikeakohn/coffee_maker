@@ -71,6 +71,7 @@ static PyObject *write(
   //delete object->class_writer;
   //object->class_writer = nullptr;
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -89,6 +90,7 @@ static PyObject *set_class_name(
   snprintf(object->class_name, sizeof(object->class_name), "%s.class", value);
   object->class_writer->set_class_name(value);
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -106,6 +108,7 @@ static PyObject *set_super_class(
 
   object->class_writer->set_super_class(value);
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -123,6 +126,7 @@ static PyObject *set_major_version(
 
   object->class_writer->set_major_version(value);
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -140,6 +144,7 @@ static PyObject *set_minor_version(
 
   object->class_writer->set_minor_version(value);
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -157,6 +162,7 @@ static PyObject *set_access_flags(
 
   object->class_writer->set_access_flags(value);
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -177,6 +183,7 @@ static PyObject *add_field(
 
   object->class_writer->add_field(name, type, access_flags, is_inherited);
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
@@ -191,7 +198,7 @@ static PyObject *add_method(
   int max_stack = 0;
   int max_locals = 0;
   uint8_t *code = nullptr;
-  int code_length = 0;
+  Py_ssize_t code_length;
 
   if (!PyArg_ParseTuple(args, "Ossiiis#", &object, &name, &type, &access_flags, &max_stack, &max_locals, &code, &code_length))
   {
@@ -207,6 +214,7 @@ static PyObject *add_method(
     code,
     code_length);
 
+  Py_INCREF(Py_None);
   return Py_None;
 }
 
