@@ -1,0 +1,21 @@
+{
+  "class_name": "TestClass",
+  "major_version": "JAVA_VERSION_7",
+  "minor_version": 0,
+  "access_flags": [ "public" ],
+  "fields": [
+    { "name": "field_1", "type": "I", "access_flags": [ "public", "static" ] },
+    { "name": "field_2", "type": "I", "access_flags": [ "private", "static" ] }
+  ],
+  "methods": [
+    {
+      "name": "add_nums",
+      "type": "I",
+      "access_flags": [ "public", "static" ],
+      "max_stack": 2,
+      "max_locals": 2,
+      "is_inherited": false,
+      "code": [ 26, 27, 96, 172 ]
+    }
+  ]
+}
